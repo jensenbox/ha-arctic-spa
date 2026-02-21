@@ -15,6 +15,8 @@ from .const import DOMAIN
 _LOGGER = logging.getLogger(__name__)
 
 _SCHEMA = vol.Schema({vol.Required(CONF_API_KEY): str})
+_API_URL = "https://myarcticspa.com/spa/SpaAPIManagement.aspx"
+_DESCRIPTION_PLACEHOLDERS = {"api_url": _API_URL}
 
 
 class ArcticSpaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -53,6 +55,7 @@ class ArcticSpaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             step_id="user",
             data_schema=_SCHEMA,
             errors=errors,
+            description_placeholders=_DESCRIPTION_PLACEHOLDERS,
         )
 
     async def async_step_reauth(self, entry_data):
@@ -86,4 +89,5 @@ class ArcticSpaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             step_id="reauth_confirm",
             data_schema=_SCHEMA,
             errors=errors,
+            description_placeholders=_DESCRIPTION_PLACEHOLDERS,
         )
