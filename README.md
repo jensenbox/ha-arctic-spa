@@ -1,6 +1,6 @@
 # Arctic Spa – Home Assistant Integration
 
-[![HACS Custom](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration)
+[![HACS](https://img.shields.io/badge/HACS-Default-41BFB3.svg)](https://github.com/hacs/integration)
 [![GitHub Release](https://img.shields.io/github/v/release/jensenbox/ha-arctic-spa)](https://github.com/jensenbox/ha-arctic-spa/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -26,11 +26,11 @@ You need an Arctic Spa API key. Log into your account at [myarcticspa.com](https
 
 ### HACS (Recommended)
 
-1. Open HACS in Home Assistant
-2. Click the three dots menu (⋮) → **Custom repositories**
-3. Add `https://github.com/jensenbox/ha-arctic-spa` with category **Integration**
-4. Search for "Arctic Spa" in HACS and click **Install**
-5. Restart Home Assistant
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=jensenbox&repository=ha-arctic-spa&category=integration)
+
+1. Click the button above, or open HACS and search for **Arctic Spa**
+2. Click **Install**
+3. Restart Home Assistant
 
 ### Manual
 
