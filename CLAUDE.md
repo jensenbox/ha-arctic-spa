@@ -23,8 +23,8 @@ cd ../ha-arctic-spa-issue-42
 ## Commands
 
 ```bash
-# Install dev dependencies
-uv sync
+# Install dev dependencies (includes ruff, pytest, pytest-asyncio)
+uv sync --dev
 
 # Run tests
 uv run pytest tests/ -v
