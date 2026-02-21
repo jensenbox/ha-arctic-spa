@@ -7,21 +7,23 @@ from homeassistant.components.sensor import (
     SensorStateClass,
 )
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import UnitOfTemperature, UnitOfTime
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import DOMAIN
 from .entity import ArcticSpaEntity
 
 SENSORS = [
-    # (key, name, json_key, unit, device_class, state_class, icon, value_fn)
+    # (key, name, json_key, unit, device_class, state_class, icon, value_fn, entity_category)
     (
         "temperature",
         "Temperature",
         "temperatureF",
-        "°F",
+        UnitOfTemperature.FAHRENHEIT,
         SensorDeviceClass.TEMPERATURE,
         SensorStateClass.MEASUREMENT,
+        None,
         None,
         None,
     ),
@@ -29,8 +31,9 @@ SENSORS = [
         "setpoint",
         "Setpoint",
         "setpointF",
-        "°F",
+        UnitOfTemperature.FAHRENHEIT,
         SensorDeviceClass.TEMPERATURE,
+        None,
         None,
         None,
         None,
@@ -43,6 +46,7 @@ SENSORS = [
         None,
         SensorStateClass.MEASUREMENT,
         "mdi:test-tube",
+        None,
         None,
     ),
     (
@@ -54,6 +58,7 @@ SENSORS = [
         None,
         "mdi:test-tube",
         lambda v: v.replace("_", " ").title() if isinstance(v, str) else v,
+        EntityCategory.DIAGNOSTIC,
     ),
     (
         "orp",
@@ -63,6 +68,7 @@ SENSORS = [
         None,
         SensorStateClass.MEASUREMENT,
         "mdi:flash",
+        None,
         None,
     ),
     (
@@ -74,6 +80,7 @@ SENSORS = [
         None,
         "mdi:flash",
         lambda v: v.replace("_", " ").title() if isinstance(v, str) else v,
+        EntityCategory.DIAGNOSTIC,
     ),
     (
         "filter_status",
@@ -84,15 +91,17 @@ SENSORS = [
         None,
         "mdi:air-filter",
         None,
+        EntityCategory.DIAGNOSTIC,
     ),
     (
         "filtration_duration",
         "Filtration Duration",
         "filtration_duration",
-        "hr",
+        UnitOfTime.HOURS,
         None,
         None,
         "mdi:timer-outline",
+        None,
         None,
     ),
     (
@@ -104,6 +113,7 @@ SENSORS = [
         None,
         "mdi:refresh",
         None,
+        None,
     ),
     (
         "pump1_state",
@@ -113,6 +123,7 @@ SENSORS = [
         None,
         None,
         "mdi:pump",
+        None,
         None,
     ),
     (
@@ -124,6 +135,7 @@ SENSORS = [
         None,
         "mdi:pump",
         None,
+        None,
     ),
     (
         "errors",
@@ -134,6 +146,7 @@ SENSORS = [
         None,
         "mdi:alert-circle-outline",
         lambda v: ", ".join(v) if isinstance(v, list) and v else "None",
+        EntityCategory.DIAGNOSTIC,
     ),
 ]
 
@@ -144,10 +157,10 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up Arctic Spa sensors."""
-    coordinator = hass.data[DOMAIN][entry.entry_id]
+    coordinator = entry.runtime_data
 
     entities = []
-    for key, name, json_key, unit, dev_cls, state_cls, icon, value_fn in SENSORS:
+    for key, name, json_key, unit, dev_cls, state_cls, icon, value_fn, entity_cat in SENSORS:
         entities.append(
             ArcticSpaSensor(
                 coordinator,
@@ -160,6 +173,7 @@ async def async_setup_entry(
                 state_cls,
                 icon,
                 value_fn,
+                entity_cat,
             )
         )
     async_add_entities(entities)
@@ -180,6 +194,7 @@ class ArcticSpaSensor(ArcticSpaEntity, SensorEntity):
         state_class,
         icon,
         value_fn,
+        entity_category,
     ):
         """Initialize the sensor."""
         super().__init__(coordinator, entry_id, key, name)
@@ -189,10 +204,13 @@ class ArcticSpaSensor(ArcticSpaEntity, SensorEntity):
         self._attr_state_class = state_class
         self._attr_icon = icon
         self._value_fn = value_fn
+        self._attr_entity_category = entity_category
 
     @property
     def native_value(self):
         """Return the sensor value."""
+        if self.coordinator.data is None:
+            return None
         val = self.coordinator.data.get(self._json_key)
         if self._value_fn and val is not None:
             return self._value_fn(val)

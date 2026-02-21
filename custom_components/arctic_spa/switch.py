@@ -6,10 +6,10 @@ import logging
 from homeassistant.components.switch import SwitchEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .api import LightState, PumpState
-from .const import DOMAIN
+from .api import ArcticSpaApiError, LightState, PumpState
 from .entity import ArcticSpaEntity
 
 _LOGGER = logging.getLogger(__name__)
@@ -21,7 +21,7 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up Arctic Spa switches."""
-    coordinator = hass.data[DOMAIN][entry.entry_id]
+    coordinator = entry.runtime_data
 
     async_add_entities([
         ArcticSpaLightSwitch(coordinator, entry.entry_id),
@@ -54,13 +54,19 @@ class ArcticSpaLightSwitch(ArcticSpaEntity, SwitchEntity):
 
     async def async_turn_on(self, **kwargs) -> None:
         """Turn on the lights."""
-        await self.coordinator.client.async_set_lights(LightState.ON)
-        await self.coordinator.async_request_refresh()
+        try:
+            await self.coordinator.client.async_set_lights(LightState.ON)
+            await self.coordinator.async_request_refresh()
+        except ArcticSpaApiError as err:
+            _LOGGER.error("Failed to turn on lights: %s", err)
 
     async def async_turn_off(self, **kwargs) -> None:
         """Turn off the lights."""
-        await self.coordinator.client.async_set_lights(LightState.OFF)
-        await self.coordinator.async_request_refresh()
+        try:
+            await self.coordinator.client.async_set_lights(LightState.OFF)
+            await self.coordinator.async_request_refresh()
+        except ArcticSpaApiError as err:
+            _LOGGER.error("Failed to turn off lights: %s", err)
 
 
 class ArcticSpaPumpSwitch(ArcticSpaEntity, SwitchEntity):
@@ -86,19 +92,26 @@ class ArcticSpaPumpSwitch(ArcticSpaEntity, SwitchEntity):
 
     async def async_turn_on(self, **kwargs) -> None:
         """Turn on the pump."""
-        await self.coordinator.client.async_set_pump(self._pump_id, self._on_state)
-        await self.coordinator.async_request_refresh()
+        try:
+            await self.coordinator.client.async_set_pump(self._pump_id, self._on_state)
+            await self.coordinator.async_request_refresh()
+        except ArcticSpaApiError as err:
+            _LOGGER.error("Failed to turn on pump %s: %s", self._pump_id, err)
 
     async def async_turn_off(self, **kwargs) -> None:
         """Turn off the pump."""
-        await self.coordinator.client.async_set_pump(self._pump_id, PumpState.OFF)
-        await self.coordinator.async_request_refresh()
+        try:
+            await self.coordinator.client.async_set_pump(self._pump_id, PumpState.OFF)
+            await self.coordinator.async_request_refresh()
+        except ArcticSpaApiError as err:
+            _LOGGER.error("Failed to turn off pump %s: %s", self._pump_id, err)
 
 
 class ArcticSpaBoostSwitch(ArcticSpaEntity, SwitchEntity):
     """Switch for boost mode."""
 
     _attr_icon = "mdi:rocket-launch"
+    _attr_entity_category = EntityCategory.CONFIG
 
     def __init__(self, coordinator, entry_id):
         """Initialize the boost switch."""
@@ -113,12 +126,18 @@ class ArcticSpaBoostSwitch(ArcticSpaEntity, SwitchEntity):
 
     async def async_turn_on(self, **kwargs) -> None:
         """Turn on boost mode."""
-        if await self.coordinator.client.async_set_boost(True):
+        try:
+            await self.coordinator.client.async_set_boost(True)
             self._is_on = True
             self.async_write_ha_state()
+        except ArcticSpaApiError as err:
+            _LOGGER.error("Failed to enable boost mode: %s", err)
 
     async def async_turn_off(self, **kwargs) -> None:
         """Turn off boost mode."""
-        if await self.coordinator.client.async_set_boost(False):
+        try:
+            await self.coordinator.client.async_set_boost(False)
             self._is_on = False
             self.async_write_ha_state()
+        except ArcticSpaApiError as err:
+            _LOGGER.error("Failed to disable boost mode: %s", err)

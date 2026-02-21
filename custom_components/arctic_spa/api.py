@@ -139,8 +139,8 @@ class ArcticSpaClient:
         except aiohttp.ClientError as err:
             raise ArcticSpaConnectionError(f"Connection error: {err}") from err
 
-    async def _put(self, endpoint: str, payload: dict) -> bool:
-        """Send a PUT request."""
+    async def _put(self, endpoint: str, payload: dict) -> None:
+        """Send a PUT request, raising on any error."""
         session = await self._get_session()
         try:
             async with session.put(
@@ -152,12 +152,9 @@ class ArcticSpaClient:
                 if resp.status == 401:
                     raise ArcticSpaAuthError("Invalid API key")
                 if resp.status != 200:
-                    _LOGGER.error("PUT %s returned %s", endpoint, resp.status)
-                    return False
-                return True
+                    raise ArcticSpaApiError(f"PUT {endpoint} returned status {resp.status}")
         except aiohttp.ClientError as err:
-            _LOGGER.error("PUT %s error: %s", endpoint, err)
-            return False
+            raise ArcticSpaConnectionError(f"Connection error on PUT {endpoint}: {err}") from err
 
     async def async_get_status(self) -> SpaStatus:
         """Get current spa status."""
@@ -178,32 +175,32 @@ class ArcticSpaClient:
 
     # ── Lights ──
 
-    async def async_set_lights(self, state: LightState | str) -> bool:
+    async def async_set_lights(self, state: LightState | str) -> None:
         """Turn lights on or off."""
-        return await self._put("lights", {"state": str(state)})
+        await self._put("lights", {"state": str(state)})
 
     # ── Pumps ──
 
-    async def async_set_pump(self, pump_id: int, state: PumpState | str) -> bool:
+    async def async_set_pump(self, pump_id: int, state: PumpState | str) -> None:
         """Set pump state (off, low, high)."""
-        return await self._put(f"pumps/{pump_id}", {"state": str(state)})
+        if pump_id not in (1, 2):
+            raise ValueError(f"Invalid pump_id {pump_id!r}: must be 1 or 2")
+        await self._put(f"pumps/{pump_id}", {"state": str(state)})
 
     # ── Temperature ──
 
-    async def async_set_temperature(self, setpoint_f: int) -> bool:
+    async def async_set_temperature(self, setpoint_f: int) -> None:
         """Set the target temperature in Fahrenheit."""
-        return await self._put("temperature", {"setpointF": setpoint_f})
+        await self._put("temperature", {"setpointF": setpoint_f})
 
     # ── Filtration ──
 
-    async def async_set_filtration(self, duration: int, frequency: int) -> bool:
+    async def async_set_filtration(self, duration: int, frequency: int) -> None:
         """Set filtration schedule."""
-        return await self._put(
-            "filter", {"duration": duration, "frequency": frequency}
-        )
+        await self._put("filter", {"duration": duration, "frequency": frequency})
 
     # ── Boost ──
 
-    async def async_set_boost(self, on: bool) -> bool:
+    async def async_set_boost(self, on: bool) -> None:
         """Turn boost mode on or off."""
-        return await self._put("boost", {"state": "on" if on else "off"})
+        await self._put("boost", {"state": "on" if on else "off"})
