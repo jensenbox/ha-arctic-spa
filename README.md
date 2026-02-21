@@ -1,7 +1,7 @@
 # Arctic Spa – Home Assistant Integration
 
 [![HACS Custom](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration)
-[![GitHub Release](https://img.shields.io/github/v/release/closient/ha-arctic-spa)](https://github.com/closient/ha-arctic-spa/releases)
+[![GitHub Release](https://img.shields.io/github/v/release/jensenbox/ha-arctic-spa)](https://github.com/jensenbox/ha-arctic-spa/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A Home Assistant custom integration for [Arctic Spas](https://www.arcticspas.com/) hot tubs using the official cloud API. Provides real-time monitoring, temperature control, pump/light switching, SpaBoy water chemistry tracking, and filtration management — all as a single HA device.
@@ -28,7 +28,7 @@ You need an Arctic Spa API key. Log into your account at [myarcticspa.com](https
 
 1. Open HACS in Home Assistant
 2. Click the three dots menu (⋮) → **Custom repositories**
-3. Add `https://github.com/closient/ha-arctic-spa` with category **Integration**
+3. Add `https://github.com/jensenbox/ha-arctic-spa` with category **Integration**
 4. Search for "Arctic Spa" in HACS and click **Install**
 5. Restart Home Assistant
 
@@ -187,7 +187,7 @@ This integration uses the [Arctic Spa Cloud API](https://api.myarcticspa.com/doc
 
 - **McKinley** (449 gal, 2-pump, SpaBoy)
 
-If you have a different Arctic Spa model, please [open an issue](https://github.com/closient/ha-arctic-spa/issues) to report compatibility.
+If you have a different Arctic Spa model, please [open an issue](https://github.com/jensenbox/ha-arctic-spa/issues) to report compatibility.
 
 ## Contributing
 
