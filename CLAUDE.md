@@ -18,6 +18,8 @@ cd ../ha-arctic-spa-issue-42
 - `feat(#8): add reauth flow for expired API keys`
 - `docs(#12): add Known Limitations section to README`
 
+**Do not add Claude attribution to commits.** Do not include `Co-Authored-By: Claude` lines in commit messages.
+
 **Branch protection:** `master` is protected. All changes go through PRs. Do not commit directly to `master`.
 
 ## Commands
