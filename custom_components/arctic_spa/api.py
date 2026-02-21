@@ -1,4 +1,5 @@
 """Arctic Spa API client library."""
+
 from __future__ import annotations
 
 import logging

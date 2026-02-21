@@ -3,14 +3,14 @@
     "step": {
       "user": {
         "title": "Arctic Spa",
-        "description": "Enter your Arctic Spa API key.\n\nGet yours at [myarcticspa.com/spa/SpaAPIManagement.aspx](https://myarcticspa.com/spa/SpaAPIManagement.aspx)",
+        "description": "Enter your Arctic Spa API key.\n\nGet yours at [myarcticspa.com]({api_url})",
         "data": {
           "api_key": "API Key"
         }
       },
       "reauth_confirm": {
         "title": "Re-authenticate Arctic Spa",
-        "description": "Your Arctic Spa API key is no longer valid. Please enter a new API key.\n\nGet yours at [myarcticspa.com/spa/SpaAPIManagement.aspx](https://myarcticspa.com/spa/SpaAPIManagement.aspx)",
+        "description": "Your Arctic Spa API key is no longer valid. Please enter a new API key.\n\nGet yours at [myarcticspa.com]({api_url})",
         "data": {
           "api_key": "API Key"
         }

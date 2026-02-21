@@ -1,4 +1,5 @@
 """Config flow for Arctic Spa integration."""
+
 from __future__ import annotations
 
 import logging
@@ -14,6 +15,8 @@ from .const import DOMAIN
 _LOGGER = logging.getLogger(__name__)
 
 _SCHEMA = vol.Schema({vol.Required(CONF_API_KEY): str})
+_API_URL = "https://myarcticspa.com/spa/SpaAPIManagement.aspx"
+_DESCRIPTION_PLACEHOLDERS = {"api_url": _API_URL}
 
 
 class ArcticSpaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -52,6 +55,7 @@ class ArcticSpaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             step_id="user",
             data_schema=_SCHEMA,
             errors=errors,
+            description_placeholders=_DESCRIPTION_PLACEHOLDERS,
         )
 
     async def async_step_reauth(self, entry_data):
@@ -70,9 +74,7 @@ class ArcticSpaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 await client.async_get_status()
 
                 entry = self.hass.config_entries.async_get_entry(self.context["entry_id"])
-                self.hass.config_entries.async_update_entry(
-                    entry, data={CONF_API_KEY: api_key}
-                )
+                self.hass.config_entries.async_update_entry(entry, data={CONF_API_KEY: api_key})
                 await self.hass.config_entries.async_reload(entry.entry_id)
                 return self.async_abort(reason="reauth_successful")
             except ArcticSpaAuthError:
@@ -87,4 +89,5 @@ class ArcticSpaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             step_id="reauth_confirm",
             data_schema=_SCHEMA,
             errors=errors,
+            description_placeholders=_DESCRIPTION_PLACEHOLDERS,
         )
