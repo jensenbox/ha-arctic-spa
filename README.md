@@ -9,7 +9,7 @@ A Home Assistant custom integration for [Arctic Spas](https://www.arcticspas.com
 ## Features
 
 - **Temperature monitoring & control** — current water temp, setpoint adjustment via slider
-- **Pump control** — toggle jets on/off for Pump 1 (3-speed) and Pump 2
+- **Pump control** — toggle jets on/off for Pump 1 (high speed) and Pump 2
 - **Light control** — switch spa lights on/off
 - **SpaBoy water chemistry** — real-time pH and ORP readings with status indicators
 - **Filtration management** — adjust duration and frequency
@@ -174,7 +174,9 @@ automation:
 
 ## API
 
-This integration uses the [Arctic Spa Cloud API](https://api.myarcticspa.com/docs). The API provides:
+This integration uses the [Arctic Spa Cloud API](https://api.myarcticspa.com/docs). The full OpenAPI specification is available at [api.myarcticspa.com/api-docs/myarcticspa-openapi.json](https://api.myarcticspa.com/api-docs/myarcticspa-openapi.json).
+
+The integration uses the following endpoints:
 
 - `GET /v2/spa/status` — read spa state (polled every 60 seconds)
 - `PUT /v2/spa/lights` — control lights
@@ -183,15 +185,77 @@ This integration uses the [Arctic Spa Cloud API](https://api.myarcticspa.com/doc
 - `PUT /v2/spa/filter` — configure filtration
 - `PUT /v2/spa/boost` — toggle boost mode
 
+Authentication is performed via the `X-API-KEY` request header. Obtain an API key from the [API Key Management](https://myarcticspa.com/spa/SpaAPIManagement.aspx) page on the myarcticspa.com portal.
+
+## Known Limitations
+
+- **Temperatures are Fahrenheit only** — the API exposes temperature values in °F exclusively. Home Assistant's unit conversion system will convert to °C for metric users automatically via the `UnitOfTemperature` constant.
+- **Device model is always reported as "McKinley"** — the API does not return model information, so all spas appear as McKinley in HA.
+- **Boost Mode state resets on restart** — the Arctic Spa API does not expose boost state in the status response. The integration tracks it locally; the state will read "off" after any HA restart or integration reload regardless of actual spa state.
+- **Cloud polling only** — there is no local API; the integration requires internet access to communicate with the Arctic Spa cloud.
+- **Poll interval is fixed at 60 seconds** — data updates every 60 seconds; this is not configurable.
+- **Only tested with McKinley model hardware** — other models should work but are untested.
+- **One spa per API key** — the integration is designed for a single spa per API key. Adding the same key twice is prevented automatically.
+- **Pump 1 switch is high-speed only** — the Pump 1 Jets switch toggles between off and high speed. Low speed is readable via the Pump 1 State sensor but cannot be commanded through this integration.
+
+## Troubleshooting
+
+**Entities show "Unavailable"**
+- Verify your API key is correct and hasn't been revoked
+- Check that your Home Assistant instance has internet access
+- Check the HA logs for `arctic_spa` errors
+
+**Why are temperatures in Fahrenheit?**
+The Arctic Spa API only returns temperatures in °F. If your Home Assistant is configured for metric units, HA will automatically convert values to °C for display.
+
+**Why does my spa show as "McKinley"?**
+The API does not include model information in its responses, so the device model is hardcoded. This does not affect functionality.
+
+**Why does Boost Mode show "off" after restarting HA?**
+Boost Mode state is tracked locally because the API does not expose it in the status response. State is lost on restart.
+
+**How often does data update?**
+Every 60 seconds. You can trigger an immediate refresh by reloading the integration.
+
+**My API key stopped working**
+The integration will prompt you to re-enter your API key via Home Assistant's re-authentication flow. Go to **Settings → Devices & Services**, find Arctic Spa, and click **Re-authenticate**.
+
 ## Tested Models
 
 - **McKinley** (449 gal, 2-pump, SpaBoy)
 
 If you have a different Arctic Spa model, please [open an issue](https://github.com/jensenbox/ha-arctic-spa/issues) to report compatibility.
 
+## Development
+
+### Setup
+
+```bash
+git clone https://github.com/jensenbox/ha-arctic-spa.git
+cd ha-arctic-spa
+uv sync
+```
+
+### Running tests
+
+```bash
+pytest tests/ -v
+```
+
+### Linting
+
+```bash
+ruff check custom_components/arctic_spa
+ruff format --check custom_components/arctic_spa
+```
+
+### Testing with a real HA instance
+
+Copy the `custom_components/arctic_spa` directory into your HA `custom_components` folder and restart. Use the HA developer tools to inspect entity states and the HA log for debug output.
+
 ## Contributing
 
-Contributions are welcome! Please open an issue first to discuss what you'd like to change.
+Contributions are welcome! Please [open an issue](https://github.com/jensenbox/ha-arctic-spa/issues) first to discuss what you'd like to change.
 
 ## License
 
