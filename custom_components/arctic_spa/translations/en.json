@@ -1,0 +1,21 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Arctic Spa",
+        "description": "Enter your Arctic Spa API key.\n\nGet yours at [myarcticspa.com/spa/SpaAPIManagement.aspx](https://myarcticspa.com/spa/SpaAPIManagement.aspx)",
+        "data": {
+          "api_key": "API Key"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Invalid API key",
+      "cannot_connect": "Cannot connect to Arctic Spa API",
+      "unknown": "Unexpected error occurred"
+    },
+    "abort": {
+      "already_configured": "This spa is already configured"
+    }
+  }
+}

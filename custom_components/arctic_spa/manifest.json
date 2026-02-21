@@ -1,0 +1,12 @@
+{
+  "domain": "arctic_spa",
+  "name": "Arctic Spa",
+  "codeowners": ["@closient"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/closient/ha-arctic-spa",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/closient/ha-arctic-spa/issues",
+  "requirements": [],
+  "version": "1.0.0"
+}
