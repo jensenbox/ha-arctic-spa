@@ -4,6 +4,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Workflow
 
+**Every piece of work must have a GitHub issue.** Before writing any code, check that a corresponding issue exists at `https://github.com/jensenbox/ha-arctic-spa/issues`. If one does not exist, create it first.
+
 **Always use a git worktree when working on an issue.** Create a worktree per issue branch rather than working directly on `master`:
 
 ```bash
