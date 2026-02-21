@@ -7,27 +7,34 @@ on:
     branches: [master]
 
 jobs:
+  pre-commit:
+    name: Pre-commit (prek)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - name: Install prek
+        run: uv tool install prek
+      - name: Run prek
+        run: prek run --all-files
+
   lint:
     name: Lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - run: pip install ruff
-      - run: ruff check custom_components/arctic_spa
+      - uses: astral-sh/setup-uv@v5
+      - run: uv run ruff check custom_components/arctic_spa
+      - run: uv run ruff format --check custom_components/arctic_spa
 
   test:
     name: Test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - run: pip install pytest pytest-asyncio aiohttp
-      - run: pytest tests/ -v
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync
+      - run: uv run pytest tests/ -v
 
   validate:
     name: HACS Validation
