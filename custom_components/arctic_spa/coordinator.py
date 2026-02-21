@@ -1,4 +1,5 @@
 """Data update coordinator for Arctic Spa."""
+
 from __future__ import annotations
 
 import logging

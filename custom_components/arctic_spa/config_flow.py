@@ -1,4 +1,5 @@
 """Config flow for Arctic Spa integration."""
+
 from __future__ import annotations
 
 import logging
@@ -70,9 +71,7 @@ class ArcticSpaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 await client.async_get_status()
 
                 entry = self.hass.config_entries.async_get_entry(self.context["entry_id"])
-                self.hass.config_entries.async_update_entry(
-                    entry, data={CONF_API_KEY: api_key}
-                )
+                self.hass.config_entries.async_update_entry(entry, data={CONF_API_KEY: api_key})
                 await self.hass.config_entries.async_reload(entry.entry_id)
                 return self.async_abort(reason="reauth_successful")
             except ArcticSpaAuthError:

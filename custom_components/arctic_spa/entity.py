@@ -1,4 +1,5 @@
 """Base entity for Arctic Spa."""
+
 from __future__ import annotations
 
 from homeassistant.helpers.entity import DeviceInfo
