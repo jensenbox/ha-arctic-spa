@@ -12,11 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v5
-      - name: Install prek
-        run: uv tool install prek
-      - name: Run prek
-        run: prek run --all-files
+      - uses: j178/prek-action@v1
 
   lint:
     name: Lint
