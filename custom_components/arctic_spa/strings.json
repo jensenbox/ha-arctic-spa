@@ -17,5 +17,12 @@
     "abort": {
       "already_configured": "This spa is already configured"
     }
+  },
+  "options": {},
+  "issues": {
+    "reauth": {
+      "title": "Arctic Spa re-authentication required",
+      "description": "Your Arctic Spa API key is no longer valid. Please re-enter it."
+    }
   }
 }

@@ -7,19 +7,20 @@ from homeassistant.components.binary_sensor import (
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import DOMAIN
 from .entity import ArcticSpaEntity
 
 BINARY_SENSORS = [
-    # (key, name, device_class, icon, value_fn)
+    # (key, name, device_class, icon, value_fn, entity_category)
     (
         "connected",
         "Connected",
         BinarySensorDeviceClass.CONNECTIVITY,
         None,
         lambda d: d.get("connected", False),
+        EntityCategory.DIAGNOSTIC,
     ),
     (
         "spaboy_connected",
@@ -27,13 +28,15 @@ BINARY_SENSORS = [
         BinarySensorDeviceClass.CONNECTIVITY,
         None,
         lambda d: d.get("spaboy_connected", False),
+        EntityCategory.DIAGNOSTIC,
     ),
     (
         "spaboy_producing",
         "SpaBoy Producing",
         None,
-        "mdi:chemical-weapon",
+        "mdi:flask",
         lambda d: d.get("spaboy_producing", False),
+        EntityCategory.DIAGNOSTIC,
     ),
     (
         "lights",
@@ -41,6 +44,7 @@ BINARY_SENSORS = [
         BinarySensorDeviceClass.LIGHT,
         None,
         lambda d: d.get("lights") == "on",
+        None,
     ),
     (
         "filter_suspension",
@@ -48,6 +52,7 @@ BINARY_SENSORS = [
         None,
         "mdi:air-filter",
         lambda d: d.get("filter_suspension") == "on",
+        EntityCategory.DIAGNOSTIC,
     ),
     (
         "pump1_running",
@@ -55,6 +60,7 @@ BINARY_SENSORS = [
         BinarySensorDeviceClass.RUNNING,
         None,
         lambda d: d.get("pump1", "off") != "off",
+        None,
     ),
     (
         "pump2_running",
@@ -62,6 +68,7 @@ BINARY_SENSORS = [
         BinarySensorDeviceClass.RUNNING,
         None,
         lambda d: d.get("pump2", "off") != "off",
+        None,
     ),
     (
         "has_errors",
@@ -69,6 +76,7 @@ BINARY_SENSORS = [
         BinarySensorDeviceClass.PROBLEM,
         None,
         lambda d: len(d.get("errors", [])) > 0,
+        EntityCategory.DIAGNOSTIC,
     ),
 ]
 
@@ -79,23 +87,28 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up Arctic Spa binary sensors."""
-    coordinator = hass.data[DOMAIN][entry.entry_id]
+    coordinator = entry.runtime_data
 
     async_add_entities(
-        ArcticSpaBinarySensor(coordinator, entry.entry_id, key, name, dev_cls, icon, value_fn)
-        for key, name, dev_cls, icon, value_fn in BINARY_SENSORS
+        ArcticSpaBinarySensor(
+            coordinator, entry.entry_id, key, name, dev_cls, icon, value_fn, entity_cat
+        )
+        for key, name, dev_cls, icon, value_fn, entity_cat in BINARY_SENSORS
     )
 
 
 class ArcticSpaBinarySensor(ArcticSpaEntity, BinarySensorEntity):
     """Representation of an Arctic Spa binary sensor."""
 
-    def __init__(self, coordinator, entry_id, key, name, device_class, icon, value_fn):
+    def __init__(  # noqa: PLR0913
+        self, coordinator, entry_id, key, name, device_class, icon, value_fn, entity_category
+    ):
         """Initialize the binary sensor."""
         super().__init__(coordinator, entry_id, key, name)
         self._attr_device_class = device_class
         self._attr_icon = icon
         self._value_fn = value_fn
+        self._attr_entity_category = entity_category
 
     @property
     def is_on(self) -> bool | None:
