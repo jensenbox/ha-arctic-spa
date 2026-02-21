@@ -1,4 +1,5 @@
 """Switch platform for Arctic Spa."""
+
 from __future__ import annotations
 
 import logging
@@ -23,12 +24,14 @@ async def async_setup_entry(
     """Set up Arctic Spa switches."""
     coordinator = entry.runtime_data
 
-    async_add_entities([
-        ArcticSpaLightSwitch(coordinator, entry.entry_id),
-        ArcticSpaPumpSwitch(coordinator, entry.entry_id, 1, "Pump 1 Jets", PumpState.HIGH),
-        ArcticSpaPumpSwitch(coordinator, entry.entry_id, 2, "Pump 2 Jets", PumpState.HIGH),
-        ArcticSpaBoostSwitch(coordinator, entry.entry_id),
-    ])
+    async_add_entities(
+        [
+            ArcticSpaLightSwitch(coordinator, entry.entry_id),
+            ArcticSpaPumpSwitch(coordinator, entry.entry_id, 1, "Pump 1 Jets", PumpState.HIGH),
+            ArcticSpaPumpSwitch(coordinator, entry.entry_id, 2, "Pump 2 Jets", PumpState.HIGH),
+            ArcticSpaBoostSwitch(coordinator, entry.entry_id),
+        ]
+    )
 
 
 class ArcticSpaLightSwitch(ArcticSpaEntity, SwitchEntity):

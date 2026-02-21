@@ -1,4 +1,5 @@
 """Number platform for Arctic Spa."""
+
 from __future__ import annotations
 
 import logging
@@ -24,11 +25,13 @@ async def async_setup_entry(
     """Set up Arctic Spa number entities."""
     coordinator = entry.runtime_data
 
-    async_add_entities([
-        ArcticSpaTemperature(coordinator, entry.entry_id),
-        ArcticSpaFiltrationDuration(coordinator, entry.entry_id),
-        ArcticSpaFiltrationFrequency(coordinator, entry.entry_id),
-    ])
+    async_add_entities(
+        [
+            ArcticSpaTemperature(coordinator, entry.entry_id),
+            ArcticSpaFiltrationDuration(coordinator, entry.entry_id),
+            ArcticSpaFiltrationFrequency(coordinator, entry.entry_id),
+        ]
+    )
 
 
 class ArcticSpaTemperature(ArcticSpaEntity, NumberEntity):

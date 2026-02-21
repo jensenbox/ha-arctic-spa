@@ -1,7 +1,8 @@
 """Tests for the Arctic Spa API client."""
-from unittest.mock import AsyncMock, MagicMock, patch
+
 import sys
 from types import ModuleType
+from unittest.mock import AsyncMock, MagicMock, patch
 
 # Stub out homeassistant modules so we can import api.py without HA installed
 ha_mock = ModuleType("homeassistant")
@@ -36,10 +37,10 @@ for mod in [
 ]:
     sys.modules.setdefault(mod, MagicMock())
 
-import aiohttp
-import pytest
+import aiohttp  # noqa: E402
+import pytest  # noqa: E402
 
-from custom_components.arctic_spa.api import (
+from custom_components.arctic_spa.api import (  # noqa: E402
     ArcticSpaApiError,
     ArcticSpaAuthError,
     ArcticSpaClient,
@@ -48,7 +49,6 @@ from custom_components.arctic_spa.api import (
     PumpState,
     SpaStatus,
 )
-
 
 MOCK_STATUS_RESPONSE = {
     "connected": True,
@@ -80,7 +80,9 @@ def _make_response(status: int = 200, json_data: dict | None = None) -> AsyncMoc
     """Return a mock aiohttp response."""
     response = AsyncMock()
     response.status = status
-    response.json = AsyncMock(return_value=json_data if json_data is not None else MOCK_STATUS_RESPONSE)
+    response.json = AsyncMock(
+        return_value=json_data if json_data is not None else MOCK_STATUS_RESPONSE
+    )
     return response
 
 
@@ -457,7 +459,9 @@ class TestSessionLifecycle:
         mock_session = _make_session(_make_response())
         mock_session.close = AsyncMock()
 
-        with patch("custom_components.arctic_spa.api.aiohttp.ClientSession", return_value=mock_session):
+        with patch(
+            "custom_components.arctic_spa.api.aiohttp.ClientSession", return_value=mock_session
+        ):
             client = ArcticSpaClient("test_key")  # no session → will create one
             await client._get_session()  # trigger session creation
             await client.close()
@@ -472,7 +476,9 @@ class TestSessionLifecycle:
 
         new_session = _make_session(_make_response())
 
-        with patch("custom_components.arctic_spa.api.aiohttp.ClientSession", return_value=new_session):
+        with patch(
+            "custom_components.arctic_spa.api.aiohttp.ClientSession", return_value=new_session
+        ):
             client = ArcticSpaClient("test_key", session=original_session)
             session = await client._get_session()
 
