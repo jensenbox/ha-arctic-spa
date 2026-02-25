@@ -22,8 +22,8 @@ jobs:
 
       - name: Create release archive
         run: |
-          cd custom_components
-          zip -r ../arctic_spa.zip arctic_spa/
+          cd custom_components/arctic_spa
+          zip -r ../../arctic_spa.zip .
 
       - name: Upload release asset
         run: gh release upload ${{ github.event.release.tag_name }} arctic_spa.zip --clobber
