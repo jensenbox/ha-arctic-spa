@@ -26,6 +26,6 @@ jobs:
           zip -r ../arctic_spa.zip arctic_spa/
 
       - name: Upload release asset
-        uses: softprops/action-gh-release@v2
-        with:
-          files: arctic_spa.zip
+        run: gh release upload ${{ github.event.release.tag_name }} arctic_spa.zip --clobber
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
