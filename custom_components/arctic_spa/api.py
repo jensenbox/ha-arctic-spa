@@ -166,14 +166,6 @@ class ArcticSpaClient:
         """Get current spa status as raw dict (for coordinator)."""
         return await self._get("status")
 
-    async def async_validate(self) -> bool:
-        """Validate the API key by making a test request."""
-        try:
-            await self.async_get_status()
-            return True
-        except ArcticSpaApiError:
-            return False
-
     # ── Lights ──
 
     async def async_set_lights(self, state: LightState | str) -> None:

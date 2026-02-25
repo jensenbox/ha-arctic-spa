@@ -37,8 +37,6 @@ async def async_setup_entry(
 class ArcticSpaLightSwitch(ArcticSpaEntity, SwitchEntity):
     """Switch for spa lights."""
 
-    _attr_icon = "mdi:lightbulb"
-
     def __init__(self, coordinator, entry_id):
         """Initialize the light switch."""
         super().__init__(coordinator, entry_id, "lights_switch", "Lights")
