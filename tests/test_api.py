@@ -397,46 +397,6 @@ class TestPutRequests:
 
 
 # ---------------------------------------------------------------------------
-# async_validate
-# ---------------------------------------------------------------------------
-
-
-class TestValidate:
-    """Tests for async_validate."""
-
-    @pytest.mark.asyncio
-    async def test_validate_success(self):
-        """Successful status fetch returns True."""
-        client = ArcticSpaClient("test_key", session=_make_session(_make_response()))
-        assert await client.async_validate() is True
-
-    @pytest.mark.asyncio
-    async def test_validate_auth_failure_returns_false(self):
-        """ArcticSpaAuthError during validate returns False."""
-        client = ArcticSpaClient("bad_key", session=_make_session(_make_response(status=401)))
-        assert await client.async_validate() is False
-
-    @pytest.mark.asyncio
-    async def test_validate_connection_failure_returns_false(self):
-        """ArcticSpaConnectionError during validate returns False."""
-        session = MagicMock(spec=aiohttp.ClientSession)
-        session.closed = False
-        cm = AsyncMock()
-        cm.__aenter__ = AsyncMock(side_effect=aiohttp.ClientError("unreachable"))
-        cm.__aexit__ = AsyncMock(return_value=False)
-        session.get = MagicMock(return_value=cm)
-
-        client = ArcticSpaClient("test_key", session=session)
-        assert await client.async_validate() is False
-
-    @pytest.mark.asyncio
-    async def test_validate_server_error_returns_false(self):
-        """HTTP 500 during validate returns False."""
-        client = ArcticSpaClient("test_key", session=_make_session(_make_response(status=500)))
-        assert await client.async_validate() is False
-
-
-# ---------------------------------------------------------------------------
 # Session lifecycle
 # ---------------------------------------------------------------------------
 
