@@ -12,6 +12,10 @@ categories:
   - title: 'Documentation'
     labels:
       - 'documentation'
+  - title: 'Dependencies'
+    collapse-after: 3
+    labels:
+      - 'dependencies'
 
 change-template: '- $TITLE (#$NUMBER)'
 change-title-escapes: '\<*_&'
@@ -28,6 +32,7 @@ version-resolver:
     labels:
       - 'bug'
       - 'documentation'
+      - 'dependencies'
   default: patch
 
 template: |
