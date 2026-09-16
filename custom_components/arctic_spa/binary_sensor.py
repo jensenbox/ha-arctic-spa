@@ -76,7 +76,7 @@ BINARY_SENSORS = [
         "Pump 3 Running",
         BinarySensorDeviceClass.RUNNING,
         None,
-        lambda d: d.get("pump2", "off") != "off",
+        lambda d: d.get("pump3", "off") != "off",
         None,
     ),
     (
