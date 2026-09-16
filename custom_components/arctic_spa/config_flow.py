@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import logging
 
 import voluptuous as vol
@@ -35,8 +36,8 @@ class ArcticSpaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             try:
                 await client.async_get_status()
 
-                # Prevent duplicate entries
-                await self.async_set_unique_id(api_key[:16])
+                # Prevent duplicate entries without persisting any part of the API key itself
+                await self.async_set_unique_id(hashlib.sha256(api_key.encode()).hexdigest())
                 self._abort_if_unique_id_configured()
 
                 return self.async_create_entry(
