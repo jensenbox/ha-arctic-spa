@@ -26,11 +26,11 @@ You need an Arctic Spa API key. Log into your account at [myarcticspa.com](https
 
 ### HACS (Recommended)
 
+Arctic Spa is listed in the HACS default store, so no custom repository is needed.
+
 1. Open HACS in Home Assistant
-2. Click the three dots menu (⋮) → **Custom repositories**
-3. Add `https://github.com/jensenbox/ha-arctic-spa` with category **Integration**
-4. Search for "Arctic Spa" in HACS and click **Install**
-5. Restart Home Assistant
+2. Search for "Arctic Spa" and click **Install**
+3. Restart Home Assistant
 
 ### Manual
 
